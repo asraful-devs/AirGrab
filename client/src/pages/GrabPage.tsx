@@ -1,5 +1,5 @@
 const GrabPage = () => {
-    return <div className='text-3xl'>Grab Page</div>;
+    return <div>mama</div>;
 };
 
 export default GrabPage;
