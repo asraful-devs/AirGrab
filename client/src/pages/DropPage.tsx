@@ -2,11 +2,8 @@
 import { ArrowDown } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-
-const DROP_COOLDOWN = 10000;
-const RECEIVER_ID = 'id2';
-const API_URL = 'https://grab-and-drop.onrender.com';
-const CONFIDENCE_THRESHOLD = 0.7;
+import { v4 as uuid } from 'uuid';
+import config from '../config';
 
 interface DropPageProps {
     currentGesture: string;
@@ -18,6 +15,8 @@ const DropPage = ({ currentGesture, gestureConfidence }: DropPageProps) => {
     const [isDropping, setIsDropping] = useState(false);
     const [hasDropped, setHasDropped] = useState(false);
 
+    const RECEIVER_ID = uuid();
+
     const lastDropTime = useRef(0);
 
     const handleDrop = async () => {
@@ -27,13 +26,17 @@ const DropPage = ({ currentGesture, gestureConfidence }: DropPageProps) => {
         setIsDropping(true);
 
         try {
-            const response = await fetch(`${API_URL}/drop/${RECEIVER_ID}`);
+            const response = await fetch(
+                `${config.API_URL}/drop/${RECEIVER_ID}`
+            );
             const data = await response.json();
 
             if (data.success && data.imagePath) {
-                console.log(`${API_URL}${data.imagePath}`);
+                console.log(`${config.API_URL}${data.imagePath}`);
                 setTimeout(() => {
-                    setReceivedImage(`${API_URL}${data.imagePath}` as string);
+                    setReceivedImage(
+                        `${config.API_URL}${data.imagePath}` as string
+                    );
                     setIsDropping(false);
                     setHasDropped(true);
                 }, 1000);
@@ -54,11 +57,11 @@ const DropPage = ({ currentGesture, gestureConfidence }: DropPageProps) => {
         const timeSinceLastDrop = Date.now() - lastDropTime.current;
         if (
             currentGesture === 'drop' &&
-            gestureConfidence > CONFIDENCE_THRESHOLD &&
+            gestureConfidence > config.CONFIDENCE_THRESHOLD &&
             !isDropping &&
             !hasDropped &&
             !receivedImage &&
-            timeSinceLastDrop > DROP_COOLDOWN
+            timeSinceLastDrop > config.COOLDOWN
         ) {
             handleDrop();
         }
