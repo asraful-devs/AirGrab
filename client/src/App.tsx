@@ -5,10 +5,10 @@ import DropPage from './pages/DropPage';
 import GrabPage from './pages/GrabPage';
 
 const App = () => {
-    const [currentGesture, setCurrentGesture] = useState(null);
+    const [currentGesture, setCurrentGesture] = useState<string | null>(null);
     const [gestureConfidence, setGestureConfidence] = useState(0);
 
-    const handleGesture = (gesture, confidence) => {
+    const handleGesture = (gesture: string, confidence: number) => {
         setCurrentGesture(gesture);
         setGestureConfidence(confidence);
     };

@@ -1,22 +1,20 @@
-import { Upload } from 'lucide-react';
+import { ArrowRight, Hand, Upload } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { v4 as uuid } from 'uuid';
 import config from '../config';
 
-const GrabPage = ({
-    currentGesture,
-    gestureConfidence,
-}: {
-    currentGesture: string;
+interface GrabPageProps {
+    currentGesture: string | null;
     gestureConfidence: number;
-}) => {
+}
+
+const GrabPage = ({ currentGesture, gestureConfidence }: GrabPageProps) => {
     const [selectedImage, setSelectedImage] = useState<File | null>(null);
     const [imagePreview, setImagePreview] = useState<string | null>(null);
     const [isGrabbing, setIsGrabbing] = useState(false);
     const [hasGrabbed, setHasGrabbed] = useState(false);
 
-    const USER_ID = uuid();
+    const USER_ID = 'user1';
 
     const lastGrabTime = useRef(0);
     const hasCalledGrab = useRef(false);
@@ -122,10 +120,11 @@ const GrabPage = ({
                         </label>
 
                         <Link
-                            to={'/drop'}
-                            className='mt-6 w-fit flex items-center justify-center gap-2 text-gray-600 underline py-2 text-xs rounded-xl transition-colors'
+                            to='/drop'
+                            className='mt-6 w-full flex items-center justify-center gap-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 py-3 px-4 rounded-xl text-sm font-medium transition-all duration-200 border border-emerald-200 hover:border-emerald-300 hover:shadow-sm'
                         >
-                            Go to Drop Page
+                            <span>Go to Drop Zone</span>
+                            <ArrowRight className='w-4 h-4' />
                         </Link>
                     </div>
                 ) : (
@@ -142,6 +141,26 @@ const GrabPage = ({
                                 <div className='animate-bounce absolute w-32 h-32 rounded-full bg-white opacity-75'></div>
                             </div>
                         )}
+
+                        {/* Gesture Status Indicator */}
+                        <div className='absolute bottom-6 left-1/2 transform -translate-x-1/2'>
+                            <div
+                                className={`flex items-center gap-3 px-6 py-3 rounded-full shadow-lg transition-all duration-300 ${
+                                    currentGesture === 'grab'
+                                        ? 'bg-indigo-500 text-white scale-110'
+                                        : 'bg-white/90 text-gray-700'
+                                }`}
+                            >
+                                <Hand
+                                    className={`w-5 h-5 ${currentGesture === 'grab' ? 'animate-bounce' : ''}`}
+                                />
+                                <span className='text-sm font-medium'>
+                                    {currentGesture === 'grab'
+                                        ? `Grabbing... (${Math.round(gestureConfidence * 100)}%)`
+                                        : 'Show "Grab" gesture'}
+                                </span>
+                            </div>
+                        </div>
                     </div>
                 )}
             </div>

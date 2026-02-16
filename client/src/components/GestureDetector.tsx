@@ -1,17 +1,15 @@
 import { useEffect, useRef, useState } from 'react';
 import config from '../config';
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type Classifier = any;
-
-interface GestureDetectorProps {
-    onGesture: (label: string, confidence: number) => void;
-}
+import type {
+    ClassificationResult,
+    GestureDetectorProps,
+    ML5Classifier,
+} from '../types/index.global';
 
 const GestureDetector = ({ onGesture }: GestureDetectorProps) => {
     const videoRef = useRef<HTMLVideoElement>(null);
-    const [isVideoStarted, setIsVideoStarted] = useState(false);
-    const [classifier, setClassifier] = useState<Classifier | null>(null);
+    const [isVideoStarted, setIsVideoStarted] = useState<boolean>(false);
+    const [classifier, setClassifier] = useState<ML5Classifier | null>(null);
 
     useEffect(() => {
         const loadModel = async () => {
@@ -31,17 +29,15 @@ const GestureDetector = ({ onGesture }: GestureDetectorProps) => {
         loadModel();
     }, []);
 
-    const classifyGesture = () => {
+    const classifyGesture = (): void => {
         if (classifier && videoRef.current) {
             classifier.classify(
                 videoRef.current,
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                (results: any[], error: Error) => {
+                (results: ClassificationResult[], error?: Error) => {
                     if (error) {
                         console.error('Classification error: ', error);
                         return;
                     }
-                    //console.log(results)
                     if (results && results[0]) {
                         onGesture(results[0].label, results[0].confidence);
                     }

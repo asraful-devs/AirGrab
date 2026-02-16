@@ -1,12 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { ArrowDown } from 'lucide-react';
+import { ArrowDown, ArrowLeft, Hand } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { v4 as uuid } from 'uuid';
 import config from '../config';
 
 interface DropPageProps {
-    currentGesture: string;
+    currentGesture: string | null;
     gestureConfidence: number;
 }
 
@@ -15,7 +14,7 @@ const DropPage = ({ currentGesture, gestureConfidence }: DropPageProps) => {
     const [isDropping, setIsDropping] = useState(false);
     const [hasDropped, setHasDropped] = useState(false);
 
-    const RECEIVER_ID = uuid();
+    const RECEIVER_ID = 'user2';
 
     const lastDropTime = useRef(0);
 
@@ -99,10 +98,11 @@ const DropPage = ({ currentGesture, gestureConfidence }: DropPageProps) => {
                                 </span>
                             </div>
                             <Link
-                                to={'/'}
-                                className='absolute bottom-8 left-1/2 transform -translate-x-1/2 flex items-center gap-2 text-gray-600 text-xs underline px-6 py-3 transition-colors'
+                                to='/'
+                                className='mt-4 w-full flex items-center justify-center gap-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 py-3 px-4 rounded-xl text-sm font-medium transition-all duration-200 border border-indigo-200 hover:border-indigo-300 hover:shadow-sm'
                             >
-                                Back to home
+                                <ArrowLeft className='w-4 h-4' />
+                                <span>Go to Grab Zone</span>
                             </Link>
                         </div>
                     )}
@@ -122,6 +122,22 @@ const DropPage = ({ currentGesture, gestureConfidence }: DropPageProps) => {
                         alt='Received'
                         className='w-full h-full object-contain'
                     />
+
+                    {/* Gesture Status Indicator */}
+                    <div className='absolute bottom-6 left-1/2 transform -translate-x-1/2'>
+                        <div
+                            className={`flex items-center gap-3 px-6 py-3 rounded-full shadow-lg transition-all duration-300 ${
+                                hasDropped
+                                    ? 'bg-emerald-500 text-white'
+                                    : 'bg-white/90 text-gray-700'
+                            }`}
+                        >
+                            <Hand className='w-5 h-5' />
+                            <span className='text-sm font-medium'>
+                                {hasDropped ? 'Image received!' : 'Waiting...'}
+                            </span>
+                        </div>
+                    </div>
                 </div>
             )}
         </div>
