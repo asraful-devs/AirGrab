@@ -38,7 +38,7 @@ const app = express();
 
 const allowedOrigins: string[] = [
     'http://localhost:5173',
-    'https://airgrab.app',
+    'https://air-grab.vercel.app',
 ];
 
 app.use(
