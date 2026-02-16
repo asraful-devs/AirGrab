@@ -51,26 +51,23 @@ const GestureDetector = ({ onGesture }: GestureDetectorProps) => {
     };
 
     const startVideo = async () => {
-        if (
-            navigator.mediaDevices &&
-            (await navigator.mediaDevices.getUserMedia())
-        ) {
-            navigator.mediaDevices
-                .getUserMedia({ video: true })
-                .then((stream) => {
-                    if (videoRef.current) {
-                        videoRef.current.srcObject = stream;
-
-                        videoRef.current.onloadedmetadata = () => {
-                            videoRef.current?.play();
-                            setIsVideoStarted(true);
-                            classifyGesture();
-                        };
-                    }
-                })
-                .catch((error) => {
-                    console.error('Camera access denied: ', error);
+        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({
+                    video: true,
                 });
+                if (videoRef.current) {
+                    videoRef.current.srcObject = stream;
+
+                    videoRef.current.onloadedmetadata = () => {
+                        videoRef.current?.play();
+                        setIsVideoStarted(true);
+                        classifyGesture();
+                    };
+                }
+            } catch (error) {
+                console.error('Camera access denied: ', error);
+            }
         }
     };
 
